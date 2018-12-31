@@ -1,4 +1,4 @@
-package api
+package restapi
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ import (
 
 // NewPetstore creates a new petstore api handler
 func NewConfigurator() (http.Handler, error) {
-	yamlFile, err := os.Open("./ui/configurator.yml")
+	yamlFile, err := os.Open("./api/swaggerui/configurator.yml")
 	if err != nil {
 		return nil, err
 	}

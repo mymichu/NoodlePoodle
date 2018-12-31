@@ -5,25 +5,24 @@ import (
 	"net/http"
 	"strings"
 
-	"local/swagger/configurator/api"
+	"local/swagger/NoodlePoodle/api"
 )
 
 func fileServerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Executing middlewareTwo")
 		if strings.HasPrefix(r.URL.Path, "/api") {
 			log.Println("HELLO")
 			next.ServeHTTP(w, r)
 		} else {
 			log.Println("HELLO 2")
-			handler := http.FileServer(http.Dir("./ui"))
+			handler := http.FileServer(http.Dir("./api/swaggerui"))
 			handler = http.StripPrefix("/swaggerui/", handler)
 			handler.ServeHTTP(w, r)
 		}
 	})
 }
 func main() {
-	petstoreAPI, err := api.NewConfigurator()
+	petstoreAPI, err := restapi.NewConfigurator()
 
 	if err != nil {
 		log.Fatalln(err)
