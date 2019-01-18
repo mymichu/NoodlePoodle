@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"./config"
 	"./restapi"
 )
 
@@ -18,5 +19,16 @@ func main() {
 	log.Println("Serving noodle poodle api on http://127.0.0.1:3000/swaggerui/")
 
 	http.Handle("/", httpHandle)
-	http.ListenAndServe(":3000", nil)
+
+	writer := &config.WriterSettings{
+		FilePath: "./temp/config.json",
+	}
+	clientKitchen := &config.Client{
+		ID:    1,
+		Place: "Test",
+		URL:   "https://www.google.ch",
+	}
+	writer.ChangeOrAddClient(clientKitchen)
+	config.LoadConfiguration()
+	//http.ListenAndServe(":3000", nil)
 }
