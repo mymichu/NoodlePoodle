@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -21,20 +22,25 @@ type Client struct {
 	URL   string `json:"url"`
 }
 
-// ChangeOrAddClient if the client by ID already exists a new client will be added
-func (r WriterSettings) ChangeOrAddClient(client *Client) {
+func (r WriterSettings) AddClient(client *Client) error {
+	// Open our jsonFile
+	//jsonFile, err := os.Open(r.FilePath)
+	// if we os.Open returns an error then handle it
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	return nil
+}
 
-	type Clients struct {
-		Key []Client `json:"clients"`
-	}
+// ChangeClient if the client by ID already exists the client will be modified
+func (r WriterSettings) ChangeClient(client *Client) error {
 
 	// Open our jsonFile
 	jsonFile, err := os.Open(r.FilePath)
 	// if we os.Open returns an error then handle it
 	if err != nil {
-		fmt.Println(err)
+		return errors.New("Can't open config-file: " + err.Error())
 	}
-	fmt.Println("Successfully Opened users.json")
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
 
@@ -42,36 +48,43 @@ func (r WriterSettings) ChangeOrAddClient(client *Client) {
 	jsonParsed, err := gabs.ParseJSON([]byte(byteValue))
 	children, _ := jsonParsed.S("clients").Children()
 	fmt.Println(jsonParsed.Path("clients.id").String())
-	idExists := false
-	index := 0
-	for _, child := range children {
-		yes := child.Exists("id")
-		if yes == true {
-			fmt.Println("EXIST")
-		}
-		//fmt.Println(child.Path("id").String())
-		value, error := strconv.Atoi(child.Search("id").String())
-		if error == nil {
 
-			if value == client.ID {
-				fmt.Println("HI")
-				idExists = true
-				break
+	index, idExist := checkIfIDExist(children, uint16(client.ID))
+
+	if !idExist {
+		return errors.New("ID " + string(client.ID) + " does not exist")
+	}
+	//Remove current id and Add
+	jsonParsed.ArrayRemove(int(index), "clients")
+	jsonParsed.ArrayAppend(client, "clients")
+	r.writeJSONToFile(jsonParsed)
+
+	return nil
+}
+
+func checkIfIDExist(children []*gabs.Container, id uint16) (uint16, bool) {
+	var index uint16
+	var exist bool
+	for _, child := range children {
+		idExist := child.Exists("id")
+		if idExist == true {
+			value, error := strconv.ParseInt(child.Search("id").String(), 10, 16)
+			if error == nil {
+				if uint16(value) == id {
+					exist = true
+					break
+				}
 			}
 		}
 		index = index + 1
 	}
+	return index, exist
+}
 
-	if idExists {
-		fmt.Println("REMOVE " + strconv.Itoa(index))
-		jsonParsed.ArrayRemove(index, "clients")
-	}
+func (r WriterSettings) writeJSONToFile(jsonContainer *gabs.Container) {
+	jsonContainer.StringIndent("", "  ")
 
-	jsonParsed.ArrayAppend(client, "clients")
-
-	jsonParsed.StringIndent("", "  ")
-
-	prettyJSON := jsonParsed.StringIndent("", "  ")
+	prettyJSON := jsonContainer.StringIndent("", "  ")
 	fmt.Println(prettyJSON)
 	//jsonByte, _ := json.Marshal(prettyJSON)
 	//err = ioutil.WriteFile(r.FilePath, jsonByte, 0644)

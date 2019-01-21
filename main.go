@@ -28,7 +28,7 @@ func main() {
 		Place: "Test",
 		URL:   "https://www.google.ch",
 	}
-	writer.ChangeOrAddClient(clientKitchen)
+	writer.ChangeClient(clientKitchen)
 	config.LoadConfiguration()
 	//http.ListenAndServe(":3000", nil)
 }
