@@ -31,6 +31,10 @@ func main() {
 	}
 	writer.ChangeClient(clientKitchen)
 	config.LoadConfiguration()
+	initMQTTSetting := config.LoadMqttConfig()
+	fmt.Println("---- INIT ----")
+	fmt.Println(initMQTTSetting)
+	fmt.Println("--- CHANGES ----")
 	settingsMQTT := config.StartWatchMqttChanges()
 	for n := range settingsMQTT {
 		fmt.Println(n)

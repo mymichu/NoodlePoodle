@@ -21,6 +21,12 @@ func LoadConfiguration() {
 	log.Println("LOAD " + address + " - " + "PORT " + strconv.Itoa(port))
 }
 
+func LoadMqttConfig() HostMqtt {
+	var mqttSetting HostMqtt
+	config.Get("hosts", "mqtt").Scan(&mqttSetting)
+	return mqttSetting
+}
+
 func StartWatchMqttChanges() <-chan HostMqtt {
 	chanMQTT := make(chan HostMqtt)
 	go func() {
@@ -43,11 +49,7 @@ func StartWatchMqttChanges() <-chan HostMqtt {
 			if erro == nil {
 				chanMQTT <- mqttSettigns
 			}
-
-			//fmt.Println(host)
-
 		}
 	}()
-
 	return chanMQTT
 }

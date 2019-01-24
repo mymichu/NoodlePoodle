@@ -9,7 +9,7 @@
             "port": 6379
         },
         "mqtt" : {
-            "id": "s",
+            "id": "wewe",
             "username": "michu",
             "password": "asdas",
             "brokers": ["www.broker.ch"]
@@ -19,7 +19,7 @@
                 "address":     "104.40.196.109",
                 "port": 8086,
 		        "username": "admin",
-                "password": "hnh2018",
+                "password": "hnh2018s",
                 "enable": true
             },
             "logFile":{
