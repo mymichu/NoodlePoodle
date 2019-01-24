@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -30,5 +31,9 @@ func main() {
 	}
 	writer.ChangeClient(clientKitchen)
 	config.LoadConfiguration()
+	settingsMQTT := config.StartWatchMqttChanges()
+	for n := range settingsMQTT {
+		fmt.Println(n)
+	}
 	//http.ListenAndServe(":3000", nil)
 }

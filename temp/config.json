@@ -1,12 +1,33 @@
 {
     "hosts": {
         "database": {
-            "address": "10.0.0.1",
+            "address": "10.0.0.2",
             "port": 3306
         },
         "cache": {
             "address": "10.0.0.2",
             "port": 6379
+        },
+        "mqtt" : {
+            "id": "s",
+            "username": "michu",
+            "password": "asdas",
+            "brokers": ["www.broker.ch"]
+        },
+        "timeSeries":{
+            "database":{
+                "address":     "104.40.196.109",
+                "port": 8086,
+		        "username": "admin",
+                "password": "hnh2018",
+                "enable": true
+            },
+            "logFile":{
+                "path":"",
+                "enable":true,
+                "maxSizeByte":0
+            }
+
         }
     },
     "clients": [

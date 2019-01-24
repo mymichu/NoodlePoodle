@@ -15,13 +15,6 @@ type WriterSettings struct {
 	FilePath string
 }
 
-// Client clients to show the results
-type Client struct {
-	ID    int    `json:"id"`
-	Place string `json:"place"`
-	URL   string `json:"url"`
-}
-
 func (r WriterSettings) AddClient(client *Client) error {
 	// Open our jsonFile
 	//jsonFile, err := os.Open(r.FilePath)
